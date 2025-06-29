@@ -21,6 +21,14 @@ jobs:
     
     runs-on: macos-latest
     steps:
+      - name: Install GNU Make (gmake)
+        run: brew install make
+      - name: Install JDK 8
+        run: |
+          brew install --cask temurin@8
+          java -version
+      - name: Install ldid
+        run: brew install ldid
       - name: Remove work folders
         run: |
           echo "before"
