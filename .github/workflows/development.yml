@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          brew install ldid gmake cmake wget
+          brew install ldid make cmake wget
           brew install dpkg fakeroot || true # only if you're building debs
           which ldid || echo "ldid missing!"
           ldid -V || echo "ldid version check failed"
