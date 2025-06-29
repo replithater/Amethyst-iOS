@@ -22,12 +22,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Install required tools
+      - name: Install dpkg
         run: |
-          brew install ldid make cmake wget
           brew install dpkg fakeroot || true # only if you're building debs
-          which ldid || echo "ldid missing!"
-          ldid -V || echo "ldid version check failed"
   
       - name: Install GNU Make (gmake)
         run: brew install make
