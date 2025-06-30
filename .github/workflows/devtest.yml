@@ -40,12 +40,13 @@ jobs:
           brew install make dpkg fakeroot ldid || true
        
 
-      - name: Setup Java 8
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '8'
-          architecture: 'aarch64'
+      - name: Install & link Java 8
+        run: |
+          brew install openjdk@8
+          brew link --force --overwrite openjdk@8
+          echo "JAVA_HOME=$(brew --prefix openjdk@8)/libexec/openjdk.jdk/Contents/Home" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+
 
 
 
