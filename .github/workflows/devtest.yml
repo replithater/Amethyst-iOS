@@ -34,12 +34,11 @@ jobs:
       - name: Add Homebrew bin to PATH
         run: echo "/opt/homebrew/bin" >> $GITHUB_PATH
 
-      # 3. Install CocoaPods & other deps
+      # 3. Install  deps
       - name: Install dependencies
         run: |
           brew install make dpkg fakeroot ldid || true
-          gem install cocoapods
-          pod install --repo-update
+       
 
       # 4. Setup Java (for any dpkg/java tooling)
       - name: Setup Java 8
