@@ -19,11 +19,8 @@ jobs:
           - platform: 2
             platform_name: ios
     
-    runs-on: macos-14
-
-
+    runs-on: ubuntu-latest
     steps:
-      
       - name: Remove work folders
         run: |
           echo "before"
@@ -39,30 +36,15 @@ jobs:
       - name: Checkout repository submodules
         run: git submodule update --init --recursive
 
-      - name: Install Rosetta
-        run: |
-          /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-
-      - name: Install dpkg
-        run: |
-          brew install dpkg fakeroot || true # only if you're building debs
-  
-      - name: Install GNU Make (gmake)
-        run: brew install make
-      - name: Install JDK 8
-        run: |
-          brew install --cask temurin@8
-          java -version
-      - name: Install ldid
-        run: brew install ldid
 
       - name: Build for ${{ matrix.platform_name }}
         run: |
           export PATH=/opt/homebrew/bin:$PATH
           export SLIMMED=1
           if [ "${{ matrix.platform_name }}" == "ios" ]; then
-            # Build ipa and tipa for iOS
+            # Build ipa  for iOS
             gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+            
           else
             # Build ipa only for everything else
             gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
@@ -73,3 +55,4 @@ jobs:
         with:
           name: org.angelauramc.amethyst-${{ matrix.platform_name }}.ipa
           path: artifacts/org.angelauramc.amethyst-*-${{ matrix.platform_name }}.ipa
+
