@@ -61,12 +61,11 @@ jobs:
         run: |
           export PATH=/opt/homebrew/bin:$PATH
           export SLIMMED=1
-          if [ "${{ matrix.platform_name }}" == "ios" ]; then
-            # Build ipa and tipa for iOS
-            gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
-          else
-            # Build ipa only for everything else
-            gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+          export CFLAGS="-O0 -g -fno-inline"
+          export CXXFLAGS="-O0 -g -fno-inline"
+
+          gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+          
           fi
       - name: Upload regular ipa
         uses: actions/upload-artifact@main
