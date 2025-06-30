@@ -23,6 +23,22 @@ jobs:
 
 
     steps:
+      
+      - name: Remove work folders
+        run: |
+          echo "before"
+          ls -lah ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          echo "after"
+          ls -lah ./
+          
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Checkout repository submodules
+        run: git submodule update --init --recursive
+
       - name: Install Rosetta
         run: |
           /usr/sbin/softwareupdate --install-rosetta --agree-to-license
@@ -39,21 +55,6 @@ jobs:
           java -version
       - name: Install ldid
         run: brew install ldid
-      - name: Remove work folders
-        run: |
-          echo "before"
-          ls -lah ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          echo "after"
-          ls -lah ./
-          
-      - name: Checkout repository
-        uses: actions/checkout@main
-
-      - name: Checkout repository submodules
-        run: git submodule update --init --recursive
-  
 
       - name: Build for ${{ matrix.platform_name }}
         run: |
