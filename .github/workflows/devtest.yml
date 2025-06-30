@@ -40,10 +40,10 @@ jobs:
           brew install make dpkg fakeroot ldid || true
        
 
-      - name: Install Java 8 via Temurin
+      - name: Install JDK 8
         run: |
-          brew tap homebrew/cask-versions
-          brew install --cask temurin8
+          brew install --cask temurin@8
+          java -version
           echo "JAVA_HOME=$(/usr/libexec/java_home -v1.8)" >> $GITHUB_ENV
           echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
