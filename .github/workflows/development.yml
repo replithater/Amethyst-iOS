@@ -19,7 +19,8 @@ jobs:
           - platform: 2
             platform_name: ios
     
-    runs-on: macos-13
+    runs-on: macos-14-arm64
+
 
     steps:
       - name: Install dpkg
