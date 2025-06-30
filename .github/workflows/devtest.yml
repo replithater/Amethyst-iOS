@@ -13,59 +13,60 @@ on:
 jobs:
   build:
     name: Build iOS IPA
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - platform: 2
             platform_name: ios
 
-    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
 
     steps:
-      # 1. Checkout code
-      - uses: actions/checkout@v4
+      # 1. Checkout source code (including submodules)
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      # 2. Put Homebrew arm64 executables on PATH
-      - name: Add Homebrew bin to PATH
-        run: echo "/opt/homebrew/bin" >> $GITHUB_PATH
-
-      # 3. Install  deps
-      - name: Install dependencies
+      # 2. Install native dependencies via apt
+      - name: Install native deps
         run: |
-          brew install make dpkg fakeroot ldid || true
-       
+          sudo apt-get update
+          sudo apt-get install -y make dpkg fakeroot ldid
 
-      - name: Install JDK 8
+      # 3. Set up Java 1.8 (Temurin)
+      - name: Set up Java 1.8 (Temurin)
+        id: setup-java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      # 4. Verify Java and export env vars
+      - name: Verify Java & configure JAVA_HOME
         run: |
-          brew install --cask temurin@8
           java -version
-          echo "JAVA_HOME=$(/usr/libexec/java_home -v1.8)" >> $GITHUB_ENV
-          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+          echo "JAVA_HOME=${{ steps.setup-java.outputs.java-home }}" >> $GITHUB_ENV
+          echo "PATH=${{ steps.setup-java.outputs.java-home }}/bin:$PATH" >> $GITHUB_ENV
 
-
-
-
-
-
-      # 5. Clean build artifacts
+      # 5. Clean previous build artifacts
       - name: Clean previous build
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData
           mkdir -p artifacts
 
-      # 6. Build IPA
+      # 6. Build the iOS IPA
       - name: Build iOS package
         run: |
-          export PATH=/opt/homebrew/bin:$PATH
-          export SLIMMED=1
-          gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+          # ensure any custom PATH changes are applied
+          export PATH=${{ steps.setup-java.outputs.java-home }}/bin:$PATH
+          # parallel make for speed
+          gmake -j$(nproc) dsym package PLATFORM=${{ matrix.platform }}
 
-      # 7. Upload the IPA
+      # 7. Upload the IPA artifact
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
