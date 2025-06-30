@@ -1,4 +1,4 @@
-name: Development build
+name: Development build1
 
 on:
   pull_request:
@@ -40,11 +40,13 @@ jobs:
           brew install make dpkg fakeroot ldid || true
        
 
-      - name: Install Java 8 via Homebrew
+      - name: Install Java 8 via Homebrew
         run: |
-          brew tap homebrew/cask-versions
-          brew install --cask temurin8
+          brew install openjdk@8
+          echo "PATH=$(brew --prefix openjdk@8)/bin:$PATH" >> $GITHUB_ENV
+          echo "JAVA_HOME=$(brew --prefix openjdk@8)/libexec/openjdk.jdk/Contents/Home" >> $GITHUB_ENV
           java -version
+
 
 
       # 5. Clean build artifacts
