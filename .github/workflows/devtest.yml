@@ -45,7 +45,8 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 8.x
+          java-version: '1.8.x'
+
 
       # 5. Clean build artifacts
       - name: Clean previous build
