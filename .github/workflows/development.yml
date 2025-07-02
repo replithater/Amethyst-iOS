@@ -59,7 +59,7 @@ jobs:
           export CFLAGS="-O0 -g -fno-inline"
           export CXXFLAGS="-O0 -g -fno-inline"
 
-          arch -x86_64 gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+          gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
           
          
       - name: Upload regular ipa
