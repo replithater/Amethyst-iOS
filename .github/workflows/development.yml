@@ -1,13 +1,6 @@
 name: Development build
 
 on:
-  pull_request:
-    branches-ignore:
-      - 'l10n_main'
-    types: [opened, reopened]
-  push:
-    branches-ignore:
-      - 'l10n_main'
   workflow_dispatch:
 
 jobs:
@@ -19,7 +12,7 @@ jobs:
           - platform: 2
             platform_name: ios
     
-    runs-on: MacStadium
+    runs-on: macos-14
 
 
     steps:
@@ -59,12 +52,14 @@ jobs:
 
       - name: Build for ${{ matrix.platform_name }}
         run: |
+          export PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
+
           export PATH=/opt/homebrew/bin:$PATH
-          export SLIMMED=1
+          
           export CFLAGS="-O0 -g -fno-inline"
           export CXXFLAGS="-O0 -g -fno-inline"
 
-          gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+          arch -x86_64 gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
           
          
       - name: Upload regular ipa
