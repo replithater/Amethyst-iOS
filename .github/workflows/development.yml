@@ -52,14 +52,13 @@ jobs:
 
       - name: Build for ${{ matrix.platform_name }}
         run: |
-          export PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
-
-          export PATH=/opt/homebrew/bin:$PATH
-          
+          export PATH=/usr/sbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
+          echo "PATH: $PATH"
+          sysctl -n hw.ncpu
           export CFLAGS="-O0 -g -fno-inline"
           export CXXFLAGS="-O0 -g -fno-inline"
-
           gmake -j$(sysctl -n hw.ncpu) dsym package PLATFORM=${{ matrix.platform }}
+
           
          
       - name: Upload regular ipa
